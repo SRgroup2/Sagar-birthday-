@@ -1,1 +1,511 @@
+<!DOCTYPE html>
+<html lang="hi" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday Sagar Geda Ji | Royal Magic Celebration</title>
+  
+  <!-- Fonts & Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Canvas Confetti & Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            goldMain: '#d4af37',
+            goldLight: '#f3e5ab',
+            goldDark: '#996515',
+            obsidian: '#06060c',
+            cardBg: 'rgba(15, 14, 25, 0.85)',
+          },
+          fontFamily: {
+            cinzel: ['Cinzel', 'serif'],
+            outfit: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: #06060c;
+      color: #f3e5ab;
+      overflow-x: hidden;
+    }
+    .gold-glow {
+      text-shadow: 0 0 15px rgba(212, 175, 55, 0.5), 0 0 30px rgba(212, 175, 55, 0.3);
+    }
+    .glass-card {
+      background: rgba(18, 16, 28, 0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+    }
+  </style>
+</head>
+<body class="relative min-h-screen selection:bg-goldMain selection:text-black">
+
+  <!-- 3D Particle Background Canvas -->
+  <canvas id="bgCanvas" class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none"></canvas>
+
+  <!-- Sticky Top Header -->
+  <header class="sticky top-0 z-40 w-full glass-card border-b border-goldMain/20 px-4 py-3">
+    <div class="max-w-5xl mx-auto flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-goldDark via-goldMain to-goldLight p-[2px]">
+          <div class="w-full h-full bg-obsidian rounded-full flex items-center justify-center">
+            <span class="font-cinzel text-goldMain text-lg font-bold">S</span>
+          </div>
+        </div>
+        <div>
+          <h1 class="font-cinzel text-base sm:text-lg font-bold text-goldMain tracking-wider">SAGAR GEDA JI</h1>
+          <p class="text-[10px] sm:text-xs text-goldLight/70">10th November Celebration</p>
+        </div>
+      </div>
+
+      <!-- Right Header Actions -->
+      <div class="flex items-center space-x-3">
+        <a href="https://www.instagram.com/sagar_geda?vrfl=NHUxMTAycG1kdzNk" target="_blank" class="p-2 text-goldLight hover:text-goldMain transition">
+          <i class="fa-brands fa-instagram text-xl"></i>
+        </a>
+        <button onclick="openVipPassModal()" class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-goldMain/15 border border-goldMain/50 text-goldMain text-xs font-semibold hover:bg-goldMain hover:text-black transition duration-300">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>VIP Entrance</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- PUBLIC VISITOR NAME GATE MODAL -->
+  <div id="visitorGateModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-lg flex items-center justify-center p-4">
+    <div class="glass-card max-w-md w-full p-6 sm:p-8 rounded-3xl text-center border-goldMain/40 relative shadow-2xl">
+      <div class="w-16 h-16 rounded-full bg-goldMain/10 border border-goldMain/50 mx-auto flex items-center justify-center text-goldMain text-3xl mb-4">
+        👑
+      </div>
+      <h2 class="font-cinzel text-2xl font-bold text-goldMain mb-2">Welcome Friend!</h2>
+      <p class="text-xs text-goldLight/80 mb-6">Sagar Geda Ji ke Birthday Celebration Portal me aapse milkar khushi hui! Apka shubh naam kya hai?</p>
+
+      <form onsubmit="saveVisitorName(event)" class="space-y-4">
+        <div>
+          <input type="text" id="publicVisitorNameInput" required placeholder="Apna Naam Yahan Likhein..." class="w-full px-4 py-3 rounded-xl bg-obsidian border border-goldMain/40 text-goldLight text-center text-sm font-semibold focus:outline-none focus:border-goldMain transition">
+        </div>
+        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-goldDark via-goldMain to-goldLight text-black font-bold text-sm hover:opacity-90 transition shadow-lg">
+          Celebration Me Enter Karein ✨
+        </button>
+      </form>
+    </div>
+  </div>
+    <!-- PUBLIC INTERACTIVE WISHING PORTAL -->
+  <div id="publicWishingPortal" class="hidden max-w-3xl mx-auto px-4 py-8 space-y-6">
+    <div class="glass-card p-6 sm:p-8 rounded-3xl text-center space-y-6">
+      
+      <div>
+        <span class="inline-block px-3 py-1 rounded-full bg-goldMain/10 border border-goldMain/30 text-goldLight text-xs mb-2">INSTAGRAM VISITOR ZONE</span>
+        <h2 class="font-cinzel text-2xl sm:text-3xl font-bold text-goldMain">
+          Wish Sagar Geda Ji <span id="displayVisitorName" class="text-goldLight block text-lg mt-1"></span>
+        </h2>
+        <p class="text-xs text-goldLight/70 mt-1">Aap jo bhi emoji tap ya wish type karenge, wo bina kisi submit button ke instant Sagar Ji ke VIP Inbox me auto-sync ho jayegi!</p>
+      </div>
+
+      <!-- Quick Interactive Emoji Action Buttons -->
+      <div class="space-y-3">
+        <label class="block text-xs font-semibold text-goldMain tracking-wider">QUICK EXPRESSIONS (TAP TO AUTO-SEND)</label>
+        <div class="grid grid-cols-4 sm:grid-cols-6 gap-2.5">
+          <button onclick="autoSyncAction('🔥 Standard Swag Blessings', '🔥')" class="glass-card p-3 rounded-2xl hover:bg-goldMain/20 hover:scale-105 transition text-2xl">🔥</button>
+          <button onclick="autoSyncAction('🎂 Happy Birthday Wishes', '🎂')" class="glass-card p-3 rounded-2xl hover:bg-goldMain/20 hover:scale-105 transition text-2xl">🎂</button>
+          <button onclick="autoSyncAction('👑 Royal King Vibes', '👑')" class="glass-card p-3 rounded-2xl hover:bg-goldMain/20 hover:scale-105 transition text-2xl">👑</button>
+          <button onclick="autoSyncAction('🥳 Birthday Blast Party', '🥳')" class="glass-card p-3 rounded-2xl hover:bg-goldMain/20 hover:scale-105 transition text-2xl">🥳</button>
+          <button onclick="autoSyncAction('🥂 Cheers To Long Life', '🥂')" class="glass-card p-3 rounded-2xl hover:bg-goldMain/20 hover:scale-105 transition text-2xl">🥂</button>
+          <button onclick="autoSyncAction('🚀 Endless Success Vibes', '🚀')" class="glass-card p-3 rounded-2xl hover:bg-goldMain/20 hover:scale-105 transition text-2xl">🚀</button>
+          <button onclick="autoSyncAction('💎 Pure Shine & Gold', '💎')" class="glass-card p-3 rounded-2xl hover:bg-goldMain/20 hover:scale-105 transition text-2xl">💎</button>
+          <button onclick="autoSyncAction('❤️ Brotherly Respect', '❤️')" class="glass-card p-3 rounded-2xl hover:bg-goldMain/20 hover:scale-105 transition text-2xl">❤️</button>
+          <button onclick="autoSyncAction('⚡ High Energy Vibes', '⚡')" class="glass-card p-3 rounded-2xl hover:bg-goldMain/20 hover:scale-105 transition text-2xl">⚡</button>
+          <button onclick="autoSyncAction('🤩 Rockstar Birthday', '🤩')" class="glass-card p-3 rounded-2xl hover:bg-goldMain/20 hover:scale-105 transition text-2xl">🤩</button>
+          <button onclick="autoSyncAction('🎉 Celebration Mode', '🎉')" class="glass-card p-3 rounded-2xl hover:bg-goldMain/20 hover:scale-105 transition text-2xl">🎉</button>
+          <button onclick="autoSyncAction('🏆 Champion Forever', '🏆')" class="glass-card p-3 rounded-2xl hover:bg-goldMain/20 hover:scale-105 transition text-2xl">🏆</button>
+        </div>
+      </div>
+
+      <!-- Magic Action Trigger Buttons -->
+      <div class="grid grid-cols-2 gap-3 pt-2">
+        <button onclick="triggerRocketSync()" class="p-3 rounded-xl bg-goldMain/15 border border-goldMain/40 text-goldLight text-xs font-bold hover:bg-goldMain hover:text-black transition flex items-center justify-center gap-2">
+          <span>🚀 Launch Wish Rocket</span>
+        </button>
+        <button onclick="triggerCannonSync()" class="p-3 rounded-xl bg-goldMain/15 border border-goldMain/40 text-goldLight text-xs font-bold hover:bg-goldMain hover:text-black transition flex items-center justify-center gap-2">
+          <span>🎉 Fire Confetti Cannon</span>
+        </button>
+      </div>
+
+      <!-- Direct Message Typing Box -->
+      <div class="pt-3">
+        <label class="block text-xs font-semibold text-goldMain mb-2 text-left">PERSONAL BIRTHDAY MESSAGE (AUTO-SAVES AS YOU TYPE)</label>
+        <textarea id="autoSyncMsgInput" rows="3" oninput="handleTypingAutoSync(this.value)" placeholder="Sagar Ji ke liye koi bhi pyaara message type karein..." class="w-full px-4 py-3 rounded-xl bg-obsidian/90 border border-goldMain/30 text-goldLight text-sm focus:outline-none focus:border-goldMain transition"></textarea>
+      </div>
+
+      <div id="autoSyncStatus" class="text-xs text-emerald-400 font-semibold opacity-0 transition duration-300">
+        ✓ Wish Sagar Ji ke VIP Inbox me save ho gayi hai!
+      </div>
+    </div>
+
+    <!-- PUBLIC PHOTO GALLERY SECTION -->
+    <div class="glass-card p-6 rounded-3xl space-y-4">
+      <h3 class="font-cinzel text-lg font-bold text-goldMain text-center">📸 Special Memories Gallery</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="rounded-2xl overflow-hidden border border-goldMain/30 bg-black/40">
+          <img src="1000066636.png" class="w-full h-56 object-cover hover:scale-105 transition duration-500" alt="Memory 1">
+        </div>
+        <div class="rounded-2xl overflow-hidden border border-goldMain/30 bg-black/40">
+          <img src="1000066635.png" class="w-full h-56 object-cover hover:scale-105 transition duration-500" alt="Memory 2">
+        </div>
+        <div class="rounded-2xl overflow-hidden border border-goldMain/30 bg-black/40">
+          <img src="1000035491.jpg" class="w-full h-56 object-cover hover:scale-105 transition duration-500" alt="Memory 3">
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center pt-2">
+      <button onclick="openVipPassModal()" class="text-xs text-goldLight/70 underline hover:text-goldMain">
+        Sagar Geda Ji VIP Password Entrance
+      </button>
+    </div>
+  </div>
+
+  <!-- SAGAR VIP FULL MAGIC MAIN PORTAL -->
+  <main id="sagarVipMainPortal" class="hidden max-w-4xl mx-auto px-4 py-8 space-y-8">
+    
+    <!-- Hero VIP Banner -->
+    <section class="text-center space-y-3">
+      <div class="inline-block px-4 py-1 rounded-full bg-goldMain/15 border border-goldMain/40 text-goldLight text-xs font-semibold tracking-widest">
+        SAGAR GEDA VIP SANCTUM
+      </div>
+      <h1 class="font-cinzel text-4xl sm:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-goldLight via-goldMain to-goldDark gold-glow">
+        HAPPY BIRTHDAY <br>SAGAR GEDA JI
+      </h1>
+      <p class="text-goldLight/80 text-sm max-w-xl mx-auto">
+        Rahul Rampurya aur sabhi chahne walon ki taraf se janamdin ki bohot bohot badhaiyan!
+      </p>
+
+      <div class="flex justify-center items-center gap-4 flex-wrap text-xs pt-2">
+        <a href="https://www.instagram.com/i_am_rahul_rampurya_?exln=MXQ5empidmpyeTlzcQ==" target="_blank" class="glass-card px-4 py-2 rounded-xl flex items-center space-x-2 border-goldMain/40">
+          <span class="text-goldLight/70">Creator:</span>
+          <span class="text-goldMain font-bold">@i_am_rahul_rampurya_</span>
+        </a>
+        <a href="https://www.instagram.com/sagar_geda?vrfl=NHUxMTAycG1kdzNk" target="_blank" class="glass-card px-4 py-2 rounded-xl flex items-center space-x-2 border-goldMain/40">
+          <span class="text-goldLight/70">Birthday Star:</span>
+          <span class="text-goldMain font-bold">@sagar_geda</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- SECTION 1: SHAHI TRIBUTE LETTER & VIDEO 1 -->
+    <section class="glass-card p-6 sm:p-8 rounded-3xl relative overflow-hidden">
+      <h2 class="font-cinzel text-2xl font-bold text-goldMain mb-4 flex items-center gap-2">
+        👑 Special Brotherly Tribute Letter
+      </h2>
+      <div class="space-y-4 text-goldLight/90 text-sm leading-relaxed mb-6">
+        <p class="font-semibold text-base text-goldMain">Pyaare Bhai Sagar Geda Ji,</p>
+        <p>
+          Aaj ka din bohot khas hai kyunki aaj mere sabse ache aur sachaai se saath dene wale bhai **Sagar** ka birthday hai! Tu sirf dost nahi, dil ke bohot kareeb bhai hai.
+        </p>
+        <p>
+          Bhagwan se yahi dua hai ki tujhe life me har wo kamyabi mile jiske tu kabil hai. Teri smile hamesha aisi hi bane rahe aur humari ye dosti hamesha aise hi mazboot rahe.
+        </p>
+        <div class="pt-2 text-right">
+          <p class="font-cinzel font-bold text-goldMain">Tera Bhai,</p>
+          <p class="font-semibold text-goldLight">Rahul Rampurya</p>
+        </div>
+      </div>
+
+      <div class="border-t border-goldMain/20 pt-4">
+        <h3 class="font-cinzel text-sm font-bold text-goldMain mb-3">🎬 Main Tribute Video</h3>
+        <div class="aspect-video bg-black/80 rounded-2xl overflow-hidden border border-goldMain/30">
+          <video class="w-full h-full object-cover" controls>
+            <source src="1000066622.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIP PHOTO GALLERY SECTION -->
+    <section class="glass-card p-6 sm:p-8 rounded-3xl space-y-4">
+      <h2 class="font-cinzel text-xl font-bold text-goldMain text-center">📸 Royal Memories & Photos Vault</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="rounded-2xl overflow-hidden border border-goldMain/30 bg-black/40">
+          <img src="1000066636.png" class="w-full h-64 object-cover hover:scale-105 transition duration-500" alt="VIP Memory 1">
+        </div>
+        <div class="rounded-2xl overflow-hidden border border-goldMain/30 bg-black/40">
+          <img src="1000066635.png" class="w-full h-64 object-cover hover:scale-105 transition duration-500" alt="VIP Memory 2">
+        </div>
+        <div class="rounded-2xl overflow-hidden border border-goldMain/30 bg-black/40">
+          <img src="1000035491.jpg" class="w-full h-64 object-cover hover:scale-105 transition duration-500" alt="VIP Memory 3">
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: 3D CAKE RITUAL & VIDEO 2 -->
+    <section class="glass-card p-6 sm:p-8 rounded-3xl text-center">
+      <h2 class="font-cinzel text-2xl font-bold text-goldMain mb-2">3D Candle Cake Ritual</h2>
+      <p class="text-xs text-goldLight/70 mb-6">Candle par click ya Blow button dabayein wish poori karne ke liye!</p>
+
+      <div class="relative w-48 h-48 mx-auto flex flex-col items-center justify-center mb-6">
+        <div id="cakeFlame" onclick="blowCandleFx()" class="w-6 h-8 bg-gradient-to-t from-orange-500 via-yellow-300 to-white rounded-full blur-[1px] animate-pulse mb-1 shadow-[0_0_20px_#f97316] cursor-pointer" title="Click to blow!"></div>
+        <div class="w-3 h-12 bg-gradient-to-b from-yellow-200 to-goldDark rounded-t-sm"></div>
+        <div class="w-44 h-20 bg-gradient-to-r from-goldDark via-goldMain to-goldDark rounded-2xl shadow-2xl flex items-center justify-center font-cinzel font-bold text-black text-sm tracking-wider">
+          SAGAR GEDA JI
+        </div>
+      </div>
+
+      <button onclick="blowCandleFx()" class="px-6 py-2.5 rounded-full bg-gradient-to-r from-goldDark via-goldMain to-goldLight text-black font-bold text-xs shadow-xl hover:scale-105 transition mb-6">
+        💨 Blow Out Candle & Wish
+      </button>
+
+      <div class="border-t border-goldMain/20 pt-4 text-left">
+        <h3 class="font-cinzel text-sm font-bold text-goldMain mb-3">🎬 Swag & Style Entry Reel</h3>
+        <div class="aspect-video bg-black/80 rounded-2xl overflow-hidden border border-goldMain/30">
+          <video class="w-full h-full object-cover" controls>
+            <source src="1000066620.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: VIDEOS 3 & 4 MEMORY VAULT -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="glass-card p-4 rounded-3xl">
+        <h3 class="font-cinzel text-xs font-bold text-goldMain mb-2">🎬 Celebration Moments</h3>
+        <div class="aspect-video bg-black/80 rounded-xl overflow-hidden border border-goldMain/30">
+          <video class="w-full h-full object-cover" controls>
+            <source src="1000066618.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <div class="glass-card p-4 rounded-3xl">
+        <h3 class="font-cinzel text-xs font-bold text-goldMain mb-2">🎬 Fun & Funniest Memories</h3>
+        <div class="aspect-video bg-black/80 rounded-xl overflow-hidden border border-goldMain/30">
+          <video class="w-full h-full object-cover" controls>
+            <source src="1000066610.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: LIVE RECEIVED WISHES INBOX LEDGER -->
+    <section class="glass-card p-6 sm:p-8 rounded-3xl space-y-4">
+      <div class="flex justify-between items-center pb-3 border-b border-goldMain/20">
+        <div>
+          <h2 class="font-cinzel text-xl font-bold text-goldMain">Visitors Wishes Ledger</h2>
+          <p class="text-xs text-goldLight/60">Public visitors ki aayi hui live wishes</p>
+        </div>
+        <span id="vipWishBadge" class="px-3 py-1 rounded-full bg-goldMain/20 border border-goldMain text-goldMain text-xs font-bold">
+          0 Wishes
+        </span>
+      </div>
+
+      <div id="vipWishesContainer" class="space-y-3 max-h-80 overflow-y-auto pr-1">
+        <!-- Live Wishes Rendered Here -->
+      </div>
+    </section>
+
+        </main>
+              <!-- VIP PASSWORD ENTER MODAL -->
+  <div id="vipPassModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-sm w-full p-6 rounded-3xl relative text-center border-goldMain">
+      <button onclick="closeVipPassModal()" class="absolute top-4 right-4 text-goldLight/60 hover:text-goldMain">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="w-12 h-12 rounded-full bg-goldMain/15 border border-goldMain mx-auto flex items-center justify-center text-goldMain text-xl mb-3">
+        🔒
+      </div>
+      <h3 class="font-cinzel text-lg font-bold text-goldMain mb-1">Sagar Geda VIP Door</h3>
+      <p class="text-xs text-goldLight/70 mb-4">Enter Password to access full VIP Sanctum</p>
+
+      <input type="password" id="vipPasswordInput" placeholder="Password Likhein..." class="w-full px-4 py-2.5 rounded-xl bg-obsidian border border-goldMain/40 text-goldLight text-center tracking-widest text-sm mb-3 focus:outline-none focus:border-goldMain">
+      
+      <button onclick="unlockVipSanctum()" class="w-full py-2.5 rounded-xl bg-goldMain text-black font-bold text-sm hover:bg-goldLight transition">
+        Unlock VIP Interface
+      </button>
+
+      <p id="vipAuthError" class="text-red-400 text-xs mt-2 hidden">Galat Password! DOB Try Karein (`10-11-2005`).</p>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    let currentVisitorName = "";
+    let autoSyncTimer = null;
+
+    // Save Name at Visitor Gate
+    function saveVisitorName(e) {
+      e.preventDefault();
+      const val = document.getElementById('publicVisitorNameInput').value.trim();
+      if (!val) return;
+      
+      currentVisitorName = val;
+      document.getElementById('visitorGateModal').classList.add('hidden');
+      document.getElementById('publicWishingPortal').classList.remove('hidden');
+      document.getElementById('displayVisitorName').innerText = `(${currentVisitorName})`;
+      
+      confetti({ particleCount: 50, spread: 50, origin: { y: 0.6 } });
+    }
+
+    // Auto-Sync Actions (Emojis & Taps)
+    function autoSyncAction(textDesc, symbol) {
+      if (!currentVisitorName) currentVisitorName = "Instagram Friend";
+      
+      saveWishToLedger(currentVisitorName, `${symbol} ${textDesc}`);
+      showSyncFeedback();
+      confetti({ particleCount: 40, spread: 60, origin: { y: 0.7 } });
+    }
+
+    function triggerRocketSync() {
+      autoSyncAction("🚀 Launched Wish Rocket into the Sky!", "🚀");
+    }
+
+    function triggerCannonSync() {
+      autoSyncAction("🎉 Fired Celebration Confetti Cannon!", "🎉");
+    }
+
+    function handleTypingAutoSync(text) {
+      if (!text.trim()) return;
+      clearTimeout(autoSyncTimer);
+      autoSyncTimer = setTimeout(() => {
+        saveWishToLedger(currentVisitorName || "Instagram Friend", text);
+        showSyncFeedback();
+      }, 700);
+    }
+
+    // Save Wish into LocalStorage
+    function saveWishToLedger(name, msg) {
+      const existing = JSON.parse(localStorage.getItem('sagar_vip_wishes') || '[]');
+      
+      const foundIdx = existing.findIndex(item => item.name === name);
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      if (foundIdx >= 0) {
+        existing[foundIdx].msg = msg;
+        existing[foundIdx].time = timeStr;
+      } else {
+        existing.unshift({ name, msg, time: timeStr });
+      }
+
+      localStorage.setItem('sagar_vip_wishes', JSON.stringify(existing));
+      renderVipWishes();
+    }
+
+    function showSyncFeedback() {
+      const el = document.getElementById('autoSyncStatus');
+      el.classList.remove('opacity-0');
+      setTimeout(() => el.classList.add('opacity-0'), 2500);
+    }
+
+    // VIP Password Modal Controls
+    function openVipPassModal() {
+      document.getElementById('vipPassModal').classList.remove('hidden');
+    }
+    function closeVipPassModal() {
+      document.getElementById('vipPassModal').classList.add('hidden');
+    }
+
+    function unlockVipSanctum() {
+      const pwd = document.getElementById('vipPasswordInput').value.trim();
+      if (pwd === '10-11-2005' || pwd === '10112005' || pwd === '10/11/2005') {
+        closeVipPassModal();
+        document.getElementById('visitorGateModal').classList.add('hidden');
+        document.getElementById('publicWishingPortal').classList.add('hidden');
+        document.getElementById('sagarVipMainPortal').classList.remove('hidden');
+        renderVipWishes();
+        confetti({ particleCount: 100, spread: 80, origin: { y: 0.5 } });
+      } else {
+        document.getElementById('vipAuthError').classList.remove('hidden');
+      }
+    }
+
+    // Render Wishes in VIP Sanctum
+    function renderVipWishes() {
+      const container = document.getElementById('vipWishesContainer');
+      if (!container) return;
+      
+      const wishes = JSON.parse(localStorage.getItem('sagar_vip_wishes') || '[]');
+      document.getElementById('vipWishBadge').innerText = `${wishes.length + 1} Wishes`;
+
+      let html = `
+        <div class="glass-card p-3 rounded-2xl border-l-4 border-l-goldMain">
+          <div class="flex justify-between items-center mb-1">
+            <span class="font-bold text-xs text-goldMain">Rahul Rampurya (@i_am_rahul_rampurya_)</span>
+            <span class="text-[10px] text-goldLight/50">Pinned Special</span>
+          </div>
+          <p class="text-xs text-goldLight/90">Bhai Sagar Geda Ji ko janamdin ki bohot shubhkaamnayein! Party ready rakhna!</p>
+        </div>
+      `;
+
+      wishes.forEach(w => {
+        html += `
+          <div class="glass-card p-3 rounded-2xl">
+            <div class="flex justify-between items-center mb-1">
+              <span class="font-bold text-xs text-goldMain">${w.name}</span>
+              <span class="text-[10px] text-goldLight/50">${w.time}</span>
+            </div>
+            <p class="text-xs text-goldLight/90">${w.msg}</p>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    // Blow Candle FX
+    function blowCandleFx() {
+      document.getElementById('cakeFlame').classList.add('hidden');
+      confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
+    }
+
+    // Three.js Background Particle Scene
+    const canvas = document.getElementById('bgCanvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    const geometry = new THREE.BufferGeometry();
+    const count = 220;
+    const positions = new Float32Array(count * 3);
+
+    for (let i = 0; i < count * 3; i++) {
+      positions[i] = (Math.random() - 0.5) * 10;
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const material = new THREE.PointsMaterial({ color: 0xd4af37, size: 0.035 });
+    const points = new THREE.Points(geometry, material);
+    scene.add(points);
+
+    camera.position.z = 3;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      points.rotation.y += 0.001;
+      points.rotation.x += 0.0006;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
 
