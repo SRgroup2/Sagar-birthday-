@@ -385,18 +385,22 @@
       }, 700);
     }
 
-      // Save Wish into LocalStorage (Har naya tap ek nayi entry banayega)
+          // Save Wish into LocalStorage (Har ek click/tap par nayi unique entry banayegi)
     function saveWishToLedger(name, msg) {
       const existing = JSON.parse(localStorage.getItem('sagar_vip_wishes') || '[]');
       const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      // Har nayi wish ya reaction ko bina overwrite kiye naye card ki tarah add karenge
-      existing.unshift({ name, msg, time: timeStr });
+      // Har bar array ke shuru me ek naya object daalenge taaki purana overwrite na ho
+      existing.unshift({ 
+        id: Date.now(), // Unique ID taaki har entry alag rahe
+        name: name, 
+        msg: msg, 
+        time: timeStr 
+      });
 
       localStorage.setItem('sagar_vip_wishes', JSON.stringify(existing));
       renderVipWishes();
     }
-
     
 
     function showSyncFeedback() {
