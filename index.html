@@ -437,7 +437,7 @@
       if (!container) return;
       
       const wishes = JSON.parse(localStorage.getItem('sagar_vip_wishes') || '[]');
-      document.getElementById('vipWishBadge').innerText = `${wishes.length} Wishes`;
+      document.getElementById('vipWishBadge').innerText = `${wishes.length +1} Wishes`;
 
       let html = `
         <div class="glass-card p-3 rounded-2xl border-l-4 border-l-goldMain">
