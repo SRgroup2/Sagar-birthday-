@@ -385,23 +385,18 @@
       }, 700);
     }
 
-    // Save Wish into LocalStorage
+        // Save Wish into LocalStorage (Allows multiple reactions per person)
     function saveWishToLedger(name, msg) {
       const existing = JSON.parse(localStorage.getItem('sagar_vip_wishes') || '[]');
-      
-      const foundIdx = existing.findIndex(item => item.name === name);
       const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      if (foundIdx >= 0) {
-        existing[foundIdx].msg = msg;
-        existing[foundIdx].time = timeStr;
-      } else {
-        existing.unshift({ name, msg, time: timeStr });
-      }
+      // Har naye action ko nayi entry ki tarah top par add karenge (overwrite nahi hoga)
+      existing.unshift({ name, msg, time: timeStr });
 
       localStorage.setItem('sagar_vip_wishes', JSON.stringify(existing));
       renderVipWishes();
     }
+    
 
     function showSyncFeedback() {
       const el = document.getElementById('autoSyncStatus');
