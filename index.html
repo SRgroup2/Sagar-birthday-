@@ -385,84 +385,65 @@
       }, 700);
     }
 
-              // Save Wish into LocalStorage (Har bar naya aur alag card banega)
-    function saveWishToLedger(name, msg) {
-      let existing = JSON.parse(localStorage.getItem('sagar_vip_wishes') || '[]');
-      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+// Firebase Cloud Database Sync Engine
+const firebaseConfig = {
+    databaseURL: "https://web-code-canvas-default-rtdb.firebaseio.com/"
+};
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.database();
 
-      // Har nayi action ko ek unique stamp ke sath add karenge
-      existing.unshift({ 
-        name: name + " #" + Math.floor(Math.random() * 1000), // Har baar alag identifier
-        msg: msg, 
-        time: timeStr 
-      });
-
-      localStorage.setItem('sagar_vip_wishes', JSON.stringify(existing));
-      renderVipWishes();
-    }
+// 1. Cloud Database me wish save karne ka function
+function saveWishToLedger(name, msg) {
+    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     
-    
+    db.ref('sagar_vip_wishes').push({
+        name: name || "Instagram Friend",
+        msg: msg,
+        time: timeStr,
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+    });
+}
 
-    function showSyncFeedback() {
-      const el = document.getElementById('autoSyncStatus');
-      el.classList.remove('opacity-0');
-      setTimeout(() => el.classList.add('opacity-0'), 2500);
-    }
+// 2. Cross-Device VIP Ledger Realtime Render Function
+function renderVipWishes() {
+    const container = document.getElementById('vipWishesContainer');
+    if (!container) return;
 
-    // VIP Password Modal Controls
-    function openVipPassModal() {
-      document.getElementById('vipPassModal').classList.remove('hidden');
-    }
-    function closeVipPassModal() {
-      document.getElementById('vipPassModal').classList.add('hidden');
-    }
+    db.ref('sagar_vip_wishes').orderByChild('timestamp').on('value', (snapshot) => {
+        const wishes = [];
+        snapshot.forEach((childSnapshot) => {
+            wishes.unshift(childSnapshot.val());
+        });
 
-    function unlockVipSanctum() {
-      const pwd = document.getElementById('vipPasswordInput').value.trim();
-      if (pwd === '10-11-2005' || pwd === '10112005' || pwd === '10/11/2005') {
-        closeVipPassModal();
-        document.getElementById('visitorGateModal').classList.add('hidden');
-        document.getElementById('publicWishingPortal').classList.add('hidden');
-        document.getElementById('sagarVipMainPortal').classList.remove('hidden');
-        renderVipWishes();
-        confetti({ particleCount: 100, spread: 80, origin: { y: 0.5 } });
-      } else {
-        document.getElementById('vipAuthError').classList.remove('hidden');
-      }
-    }
+        const badge = document.getElementById('vipWishBadge');
+        if(badge) badge.innerText = `${wishes.length + 1} Wishes`;
 
-    // Render Wishes in VIP Sanctum
-    function renderVipWishes() {
-      const container = document.getElementById('vipWishesContainer');
-      if (!container) return;
-      
-      const wishes = JSON.parse(localStorage.getItem('sagar_vip_wishes') || '[]');
-      document.getElementById('vipWishBadge').innerText = `${wishes.length +1} Wishes`;
-
-      let html = `
-        <div class="glass-card p-3 rounded-2xl border-l-4 border-l-goldMain">
-          <div class="flex justify-between items-center mb-1">
-            <span class="font-bold text-xs text-goldMain">Rahul Rampurya (@i_am_rahul_rampurya_)</span>
-            <span class="text-[10px] text-goldLight/50">Pinned Special</span>
-          </div>
-          <p class="text-xs text-goldLight/90">Bhai Sagar Geda Ji ko janamdin ki bohot shubhkaamnayein! Party ready rakhna!</p>
-        </div>
-      `;
-
-      wishes.forEach(w => {
-        html += `
-          <div class="glass-card p-3 rounded-2xl">
+        let html = `
+        <div class="glass-card p-3 rounded-2xl border-1-4 border-1-goldMain">
             <div class="flex justify-between items-center mb-1">
-              <span class="font-bold text-xs text-goldMain">${w.name}</span>
-              <span class="text-[10px] text-goldLight/50">${w.time}</span>
+                <span class="font-bold text-xs text-goldMain">Rahul Rampurya (@i_am_rahul_rampurya_)</span>
+                <span class="text-[10px] text-goldLight/50">Pinned Special</span>
             </div>
-            <p class="text-xs text-goldLight/90">${w.msg}</p>
-          </div>
-        `;
-      });
+            <p class="text-xs text-goldLight/90">Bhai Sagar Geda Ji ko janamdin ki bohot shubhkaamnayein! Party ready rakho!</p>
+        </div>`;
 
-      container.innerHTML = html;
-    }
+        wishes.forEach(w => {
+            html += `
+            <div class="glass-card p-3 rounded-2xl">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="font-bold text-xs text-goldLight">${w.name}</span>
+                    <span class="text-[10px] text-goldLight/40">${w.time}</span>
+                </div>
+                <p class="text-xs text-slate-300">${w.msg}</p>
+            </div>`;
+        });
+
+        container.innerHTML = html;
+    });
+}
+    
 
     // Blow Candle FX
     function blowCandleFx() {
