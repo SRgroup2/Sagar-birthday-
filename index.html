@@ -387,10 +387,18 @@
       }, 700);
     }
 
-// Firebase Cloud Database Sync Engine
+// Firebase Cloud Database Sync Engine (Compat Version for birthday-4b59a)
 const firebaseConfig = {
-    databaseURL: "https://web-code-canvas-default-rtdb.firebaseio.com/"
+    apiKey: "AIzaSyB7I2pe7sHvD0k58YZghwBHkv_aYT4gjs",
+    authDomain: "birthday-4b59a.firebaseapp.com",
+    databaseURL: "https://birthday-4b59a-default-rtdb.firebaseio.com/",
+    projectId: "birthday-4b59a",
+    storageBucket: "birthday-4b59a.appspot.com",
+    messagingSenderId: "107222183094",
+    appId: "1:107222183094:web:8c74fbfedc151527984a17"
 };
+
+// Initialize Firebase safely
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
@@ -423,7 +431,7 @@ function renderVipWishes() {
         if(badge) badge.innerText = `${wishes.length + 1} Wishes`;
 
         let html = `
-        <div class="glass-card p-3 rounded-2xl border-1-4 border-1-goldMain">
+        <div class="glass-card p-3 rounded-2xl border-l-4 border-goldMain">
             <div class="flex justify-between items-center mb-1">
                 <span class="font-bold text-xs text-goldMain">Rahul Rampurya (@i_am_rahul_rampurya_)</span>
                 <span class="text-[10px] text-goldLight/50">Pinned Special</span>
@@ -445,6 +453,7 @@ function renderVipWishes() {
         container.innerHTML = html;
     });
 }
+    
     
 
     // Blow Candle FX
